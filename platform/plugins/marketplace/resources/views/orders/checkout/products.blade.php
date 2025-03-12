@@ -3,6 +3,7 @@
 </div>
 
 <div class="checkout-products-marketplace shipping-method-wrapper">
+    
     @foreach ($groupedProducts as $grouped)
         @php
             $cartItems = $grouped['products']->pluck('cartItem');
@@ -36,9 +37,6 @@
                     alt="{{ $store->name }}"
                     style="max-width: 30px; margin-inline-end: 3px;"
                 >
-                <!--@php-->
-                <!--        dd($sessionCheckoutData);-->
-                <!--    @endphp-->
                 <span class="font-weight-bold">{!! BaseHelper::clean($store->name) !!}</span>
                 @if ($store->id && EcommerceHelper::isReviewEnabled())
                     <div class="d-flex align-items-center gap-2">
@@ -65,7 +63,6 @@
             </div>
 
             @if ($isAvailableShipping)
-            
                 <div class="shipping-method-wrapper py-3">
                     @if (!empty($shipping))
                         <div class="payment-checkout-form">
@@ -111,8 +108,7 @@
                 <div class="p-3">
                     <div class="row">
                         <div class="col-6">
-                            <!--<p>{{ahuy}}</p>-->
-                            <p>{{ __('Subtotal') }}: </p>
+                            <p>{{ __('Subtotal') }}:</p>
                         </div>
                         <div class="col-6 text-end">
                             <p class="price-text sub-total-text text-end">

@@ -33,6 +33,8 @@ class Shipment extends BaseModel
         'estimate_date_shipped',
         'date_shipped',
         'customer_delivered_confirmed_at',
+        'ghn_created',
+        'ghn_code',
     ];
 
     protected $casts = [
@@ -68,7 +70,7 @@ class Shipment extends BaseModel
 
     protected function isCanceled(): Attribute
     {
-        return Attribute::get(fn () => $this->status == ShippingStatusEnum::CANCELED);
+        return Attribute::get(fn() => $this->status == ShippingStatusEnum::CANCELED);
     }
 
     protected function canConfirmDelivery(): Attribute

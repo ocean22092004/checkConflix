@@ -38,66 +38,38 @@ class HandleShippingFeeService
     {
         $result = [];
 
+        // ✅ Ưu tiên lấy phí vận chuyển từ session (nếu có)
+        $sessionShippingAmount = Arr::get($data, 'shipping_amount', null);
+        // dd($data);
+        if ($sessionShippingAmount !== null) {
+            $result[ShippingMethodEnum::DEFAULT] = [
+                'name' => 'GHN Express',
+                'price' => (float) $sessionShippingAmount,
+            ];
+
+            return $result;
+        }
+
         $cacheKey = $this->getCacheKey($data);
         $cacheValue = $this->getCacheValue($cacheKey);
+
         if ($cacheValue) {
             $result[ShippingMethodEnum::DEFAULT] = $cacheValue;
         } else {
             $default = $this->getShippingFee($data, ShippingMethodEnum::DEFAULT, $option);
-
+            // dd($default);
             if ($default) {
                 $result[ShippingMethodEnum::DEFAULT] = $default;
             }
 
             $this->setCacheValue($cacheKey, $default);
         }
-
-        $result = apply_filters('handle_shipping_fee', $result, $data, $option);
-
-        if ($method) {
-            $options = Arr::get($result, $method, []);
-
-            if (! is_array($options) || ! count($options)) {
-                return [];
-            }
-
-            $filtered = Arr::where($options, function ($rate) {
-                return ! Arr::get($rate, 'disabled');
-            });
-
-            $response = Arr::get($filtered, $option);
-
-            return $response ? [$response] : [];
-        }
-
-        if (get_ecommerce_setting('hide_other_shipping_options_if_it_has_free_shipping', false)) {
-            $hasFreeShipping = false;
-
-            foreach ($result as $item) {
-                foreach ($item as $option) {
-                    if ((float) $option['price'] == 0) {
-                        $hasFreeShipping = true;
-
-                        break;
-                    }
-                }
-            }
-
-            if ($hasFreeShipping) {
-                foreach ($result as $itemKey => $item) {
-                    foreach ($item as $optionKey => $option) {
-                        if ((float) $option['price'] > 0) {
-                            Arr::forget($result, $itemKey . '.' . $optionKey);
-                        }
-                    }
-                }
-            }
-        }
-
+        // dd($result);
         return $result;
     }
 
-    protected function getShippingFee(array $data, string $method, ?string $option = null): array
+
+    public function getShippingFee(array $data, string $method, ?string $option = null): array
     {
         $weight = EcommerceHelper::validateOrderWeight(Arr::get($data, 'weight'));
 
@@ -168,7 +140,7 @@ class HandleShippingFeeService
 
             $result = $result->toArray();
         }
-
+        // dd($result);
         return $result;
     }
 

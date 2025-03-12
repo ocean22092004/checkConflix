@@ -15,6 +15,7 @@ use Botble\Ecommerce\Http\Requests\UpdateShipmentStatusRequest;
 use Botble\Ecommerce\Models\OrderHistory;
 use Botble\Ecommerce\Models\Shipment;
 use Botble\Ecommerce\Models\ShipmentHistory;
+use Botble\Ecommerce\Models\StoreLocator;
 use Botble\Ecommerce\Tables\ShipmentTable;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -41,10 +42,11 @@ class ShipmentController extends BaseController
             ->addScriptsDirectly('vendor/core/plugins/ecommerce/js/shipment.js');
 
         $shipment = Shipment::query()->findOrFail($id);
+        $storeLocator = StoreLocator::query()->where('is_primary', 1)->first();
 
         $this->pageTitle(trans('plugins/ecommerce::shipping.edit_shipping', ['code' => get_shipment_code($id)]));
-
-        return view('plugins/ecommerce::shipments.edit', compact('shipment'));
+        // dd($shipment);
+        return view('plugins/ecommerce::shipments.edit', compact('shipment', 'storeLocator'));
     }
 
     public function postUpdateStatus(Shipment $shipment, UpdateShipmentStatusRequest $request)

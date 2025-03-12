@@ -190,38 +190,40 @@
                         <span class="d-inline-block me-1">{{ __('Shipping Status') }}: </span>
                         <strong class="d-inline-block text-info">{!! BaseHelper::clean($order->shipment->status->toHtml()) !!}</strong>
                     </p>
-                    @if ($order->shipment->shipping_company_name)
-                        <p>
-                            <span class="d-inline-block me-1">{{ __('Shipping Company Name') }}: </span>
-                            <strong class="d-inline-block">{{ $order->shipment->shipping_company_name }}</strong>
-                        </p>
-                    @endif
-                    @if ($order->shipment->tracking_id)
-                        <p>
-                            <span class="d-inline-block me-1">{{ __('Tracking ID') }}: </span>
-                            <strong class="d-inline-block">{{ $order->shipment->tracking_id }}</strong>
-                        </p>
-                    @endif
-                    @if ($order->shipment->tracking_link)
-                        <p>
-                            <span class="d-inline-block me-1">{{ __('Tracking Link') }}: </span>
-                            <strong class="d-inline-block">
-                                <a href="{{ $order->shipment->tracking_link }}"
-                                    target="_blank">{{ $order->shipment->tracking_link }}</a>
-                            </strong>
-                        </p>
-                    @endif
-                    @if ($order->shipment->note)
-                        <p>
-                            <span class="d-inline-block me-1">{{ __('Delivery Notes') }}: </span>
-                            <strong class="d-inline-block">{{ $order->shipment->note }}</strong>
-                        </p>
-                    @endif
-                    @if ($order->shipment->estimate_date_shipped)
-                        <p>
-                            <span class="d-inline-block me-1">{{ __('Estimate Date Shipped') }}: </span>
-                            <strong class="d-inline-block">{{ $order->shipment->estimate_date_shipped }}</strong>
-                        </p>
+                    @if($order->shipment->ghn_created == 0)
+                        @if ($order->shipment->shipping_company_name)
+                            <p>
+                                <span class="d-inline-block me-1">{{ __('Shipping Company Name') }}: </span>
+                                <strong class="d-inline-block">{{ $order->shipment->shipping_company_name }}</strong>
+                            </p>
+                        @endif
+                        @if ($order->shipment->tracking_id)
+                            <p>
+                                <span class="d-inline-block me-1">{{ __('Tracking ID') }}: </span>
+                                <strong class="d-inline-block">{{ $order->shipment->tracking_id }}</strong>
+                            </p>
+                        @endif
+                        @if ($order->shipment->tracking_link)
+                            <p>
+                                <span class="d-inline-block me-1">{{ __('Tracking Link') }}: </span>
+                                <strong class="d-inline-block">
+                                    <a href="{{ $order->shipment->tracking_link }}"
+                                        target="_blank">{{ $order->shipment->tracking_link }}</a>
+                                </strong>
+                            </p>
+                        @endif
+                        @if ($order->shipment->note)
+                            <p>
+                                <span class="d-inline-block me-1">{{ __('Delivery Notes') }}: </span>
+                                <strong class="d-inline-block">{{ $order->shipment->note }}</strong>
+                            </p>
+                        @endif
+                        @if ($order->shipment->estimate_date_shipped)
+                            <p>
+                                <span class="d-inline-block me-1">{{ __('Estimate Date Shipped') }}: </span>
+                                <strong class="d-inline-block">{{ $order->shipment->estimate_date_shipped }}</strong>
+                            </p>
+                        @endif
                     @endif
                     @if ($order->shipment->date_shipped)
                         <p>
@@ -230,6 +232,23 @@
                         </p>
                     @endif
                 @endif
+                @if (setting('shipping_ghn_status') == 1)
+                    <div class="card">
+                        <input type="text" hidden id="ghn_token" value="{{setting('shipping_ghn_token')}}">
+                        <input type="text" hidden id="client_order_code" value="{{$order->code}}">
+                        <div class="card-body">
+                            <ul class="steps steps-vertical" id="order-history-wrapper">
+                                <li class="step-item user-action">
+                                    <div class="h5 m-0">
+                                        Đơn hàng đang ở: .....
+                                    </div>
+                                    <div class="text-secondary">2025-03-10 22:25:43</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                @endif
+
             </div>
         </div>
     </div>
@@ -246,4 +265,150 @@
             {{ __('The order could not be found. Please try again or contact us if you need assistance.') }}
         </div>
     </div>
+@endif
+
+{{-- ------------------ --}}
+@if (setting('shipping_ghn_status') == 1)
+<style>
+    #order-history-wrapper {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        position: relative;
+    }
+
+    #order-history-wrapper::before {
+    
+        content: '';
+        position: absolute;
+        left: 14px;
+        top: 10px;
+        bottom: 35px;
+        width: 2px;
+        background: #4388d9;
+
+    }
+
+    .step-item {
+        position: relative;
+        padding-left: 40px;
+        /* Khoảng cách để chứa dấu chấm */
+        margin-bottom: 20px;
+    }
+
+    .step-item::before {
+        content: '';
+        position: absolute;
+        left: 10px;
+        /* Vị trí của dấu chấm */
+        top: 10px;
+        /* Căn chỉnh theo trục dọc */
+        width: 10px;
+        height: 10px;
+        background: #007bff;
+        /* Màu của dấu chấm */
+        border-radius: 50%;
+        z-index: 1;
+    }
+
+    .step-item .h4 {
+        margin: 0;
+        font-weight: bold;
+    }
+
+    .step-item .text-secondary {
+        font-size: 0.85rem;
+        color: #666;
+    }
+
+    .timeline-dropdown {
+        border: 1px solid #ddd;
+        padding: 10px;
+        background-color: #f9f9f9;
+    }
+</style>
+{{-- ------------------------- --}}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // const ghnToken = $('#ghn_token').val();
+        const ghnToken = $('#ghn_token').val();
+        const clientOrderCode = $('#client_order_code').val();
+        const apiUrl = 'https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/detail-by-client-code';
+
+        if (!ghnToken || !clientOrderCode) {
+            console.error('GHN Token hoặc Client Order Code không hợp lệ!');
+            return;
+        }
+
+        $.ajax({
+            url: apiUrl,
+            type: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Token': ghnToken
+            },
+            data: JSON.stringify({ client_order_code: clientOrderCode }),
+            success: function(response) {
+                if (response.code === 200) {
+                    let historyHtml = '';
+
+                    // Nếu có log trạng thái (lịch sử vận chuyển)
+                    if (response.data.log && response.data.log.length > 0) {
+                        response.data.log.forEach((log) => {
+                            historyHtml += `
+                                <li class="step-item user-action">
+                                    <div class="h5 m-0">
+                                        Đơn hàng đang ở: ${getStatusText(log.status)}
+                                    </div>
+                                    <div class="text-secondary">${formatDate(log.updated_date)}</div>
+                                </li>
+                            `;
+                        });
+                    } else {
+                        // Nếu không có log, hiển thị trạng thái hiện tại
+                        historyHtml += `
+                            <li class="step-item user-action">
+                                <div class="h5 m-0">
+                                    Trạng thái đơn hàng: ${getStatusText(response.data.status)}
+                                </div>
+                                <div class="text-secondary">${formatDate(response.data.updated_date)}</div>
+                            </li>
+                        `;
+                    }
+
+                    $('#order-history-wrapper').html(historyHtml);
+                } else {
+                    console.error('Dữ liệu đơn hàng không hợp lệ:', response);
+                }
+            },
+            error: function(error) {
+                console.error('Lỗi khi gọi API GHN:', error);
+            }
+        });
+
+        // Chuyển trạng thái từ mã sang tiếng Việt
+        function getStatusText(status) {
+            const statusMap = {
+                'ready_to_pick': 'Sẵn sàng để lấy hàng',
+                'picking': 'Đang lấy hàng',
+                'picked': 'Đã lấy hàng',
+                'delivering': 'Đang giao hàng',
+                'delivery_fail': 'Giao hàng thất bại',
+                'waiting_to_return': 'Chờ trả hàng',
+                'return': 'Hoàn hàng',
+                'completed': 'Giao hàng thành công'
+            };
+            return statusMap[status] || 'Không xác định';
+        }
+
+        // Định dạng ngày giờ
+        function formatDate(dateString) {
+            if (!dateString) return 'Chưa cập nhật';
+            let date = new Date(dateString);
+            return date.toLocaleString('vi-VN');
+        }
+    });
+
+</script>
 @endif

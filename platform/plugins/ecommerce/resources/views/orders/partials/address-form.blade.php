@@ -36,7 +36,7 @@
                         @if ($isAvailableAddress)
                             @foreach ($addresses as $address)
                                 <option
-                                    value="{{ $address->id }}"
+                                    value="{{ $address->id }}" data-code="{{$address->city}}, {{$address->ward_id}}"
                                     @selected($oldSessionAddressId == $address->id)
                                 >{{ $address->full_address }}</option>
                             @endforeach
@@ -200,7 +200,7 @@
                                     data-url="{{ route('ajax.states-by-country') }}"
                                     required
                                 >
-                                    <option value="">{{ __('Select state...') }}</option>
+                                    <option value="">{{ __('Chọn tỉnh thành...') }}</option>
                                     @if (old('address.country', Arr::get($sessionCheckoutData, 'country') ?: EcommerceHelper::getDefaultCountryId()) || !EcommerceHelper::isUsingInMultipleCountries())
                                         @foreach (EcommerceHelper::getAvailableStatesByCountry(old('address.country', Arr::get($sessionCheckoutData, 'country') ?: EcommerceHelper::getDefaultCountryId())) as $stateId => $stateName)
                                             <option
@@ -211,7 +211,7 @@
                                     @endif
                                 </select>
                                 <x-core::icon name="ti ti-chevron-down" />
-                                <label for="address_state">{{ __('State') }}</label>
+                                <label for="address_state">{{ __('Tỉnh thành') }}</label>
                             </div>
                         @else
                             <div class="form-input-wrapper">
@@ -224,7 +224,7 @@
                                     value="{{ old('address.state', Arr::get($sessionCheckoutData, 'state')) }}"
                                     required
                                 >
-                                <label for="address_state">{{ __('State') }}</label>
+                                <label for="address_state">{{ __('Tỉnh thành') }}</label>
                             </div>
                         @endif
                         {!! Form::error('address.state', $errors) !!}
@@ -246,7 +246,7 @@
                                     value="{{ old('address.city', Arr::get($sessionCheckoutData, 'city')) }}"
                                     required
                                 >
-                                <label for="address_city">{{ __('City') }}</label>
+                                <label for="address_city">{{ __('Quận huyện') }}</label>
                             </div>
                         @else
                             <div class="select--arrow form-input-wrapper">
@@ -260,7 +260,7 @@
                                     data-url="{{ route('ajax.cities-by-state') }}"
                                     required
                                 >
-                                    <option value="">{{ __('Select city...') }}</option>
+                                    <option value="">{{ __('Chọn quận huyện...') }}</option>
                                     @if (old('address.state', Arr::get($sessionCheckoutData, 'state')) || in_array('state', EcommerceHelper::getHiddenFieldsAtCheckout()))
                                         @foreach (EcommerceHelper::getAvailableCitiesByState(old('address.state', Arr::get($sessionCheckoutData, 'state')), old('address.country', Arr::get($sessionCheckoutData, 'country'))) as $cityId => $cityName)
                                             <option
@@ -271,32 +271,69 @@
                                     @endif
                                 </select>
                                 <x-core::icon name="ti ti-chevron-down" />
-                                <label for="address_city">{{ __('City') }}</label>
+                                <label for="address_city">{{ __('Quận huyện') }}</label>
                             </div>
                         @endif
                         {!! Form::error('address.city', $errors) !!}
                     </div>
                 </div>
             @endif
+
+            <div @class(['col-sm-6 col-12' => ! in_array('state', EcommerceHelper::getHiddenFieldsAtCheckout()), 'col-12' => in_array('state', EcommerceHelper::getHiddenFieldsAtCheckout())])>
+                <div class="form-group mb-3 @error('address.city') has-error @enderror">
+                    @if (EcommerceHelper::useCityFieldAsTextField())
+                        <div class="form-input-wrapper">
+                            <input
+                                class="form-control"
+                                id="address_ward"
+                                name="address[ward]"
+                                autocomplete="ward"
+                                type="text"
+                                value="{{ old('address.ward', Arr::get($sessionCheckoutData, 'ward')) }}"
+                                required
+                            >
+                            <label for="address_ward">{{ __('Phường xã') }}</label>
+                        </div>
+                    @else
+                        <div class="select--arrow form-input-wrapper">
+                            <select
+                                class="form-control"
+                                id="address_ward"
+                                name="address[ward]"
+                                autocomplete="ward"
+                                data-type="ward"
+                                data-using-select2="false"
+                                data-url="{{ route('ajax.cities-by-state') }}"
+                                required
+                            >
+                                <option value="">{{ __('Chọn phường xã...') }}</option>
+                            </select>
+                            <x-core::icon name="ti ti-chevron-down" />
+                            <label for="address_ward">{{ __('Phường xã') }}</label>
+                        </div>
+                    @endif
+                    {!! Form::error('address.ward', $errors) !!}
+                </div>
+            </div>
         </div>
 
         {!! apply_filters('ecommerce_checkout_address_form_after_city_field', null, $sessionCheckoutData) !!}
 
         @if (!in_array('address', EcommerceHelper::getHiddenFieldsAtCheckout()))
-            <div class="form-group mb-3 @error('address.address') has-error @enderror">
+            <div class="form-group mb-3 @error('address.address_detail') has-error @enderror">
                 <div class="form-input-wrapper">
                     <input
                         class="form-control"
-                        id="address_address"
-                        name="address[address]"
-                        autocomplete="address"
+                        id="address_address_detail"
+                        name="address[address_detail]" 
+                        autocomplete="address_detail"
                         type="text"
-                        value="{{ old('address.address', Arr::get($sessionCheckoutData, 'address')) }}"
+                        value="{{ old('address.address_detail', Arr::get($sessionCheckoutData, 'address_detail')) }}"
                         required
                     >
-                    <label for="address_address">{{ __('Address') }}</label>
+                    <label for="address_address_detail">{{ __('Address') }}</label>
                 </div>
-                {!! Form::error('address.address', $errors) !!}
+                {!! Form::error('address.address_detail', $errors) !!}
             </div>
         @endif
 
@@ -375,3 +412,44 @@
 
     {!! apply_filters('ecommerce_checkout_address_form_after', null, $sessionCheckoutData) !!}
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const citySelect = document.getElementById("address_city");
+        const wardSelect = document.getElementById("address_ward");
+        const apiUrl = "https://online-gateway.ghn.vn/shiip/public-api/master-data/ward";
+        const token = "2c2e62dc-ee72-11ef-a3aa-e2c95c1f5bee"; // Token của bạn
+
+        citySelect.addEventListener("change", function () {
+            const districtId = this.value; // Lấy district_id từ giá trị chọn
+            if (!districtId) {
+                wardSelect.innerHTML = `<option value="">Chọn phường/xã...</option>`;
+                return;
+            }
+
+            // Gọi API để lấy danh sách phường/xã
+            fetch(`${apiUrl}?district_id=${districtId}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Token": token
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 200 && data.data.length > 0) {
+                    let options = `<option value="">Chọn phường/xã...</option>`;
+                    data.data.forEach(ward => {
+                        options += `<option value="${ward.WardCode}.${ward.WardName}">${ward.WardName}</option>`;
+                    });
+                    wardSelect.innerHTML = options;
+                } else {
+                    wardSelect.innerHTML = `<option value="">Không có dữ liệu...</option>`;
+                }
+            })
+            .catch(error => {
+                console.error("Lỗi khi gọi API GHN:", error);
+                wardSelect.innerHTML = `<option value="">Lỗi tải dữ liệu...</option>`;
+            });
+        });
+    });
+</script>

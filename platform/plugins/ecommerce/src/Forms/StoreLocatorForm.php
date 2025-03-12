@@ -46,6 +46,18 @@ class StoreLocatorForm extends FormAbstract
                     ->required()
                     ->colspan(3)
             )
+            // ->add(
+            //     'ward',
+            //     SelectField::class,
+            //     SelectFieldOption::make()
+            //         ->label(trans('plugins/ecommerce::store-locator.ward'))
+            //         ->choices([]) // Ban đầu để rỗng, sẽ cập nhật bằng JS
+            //         ->attributes([
+            //             'data-type' => 'ward',
+            //             'disabled' => true, // Mặc định disabled, chỉ mở khi có city
+            //         ])
+            //         ->colspan(3)
+            // )
             ->addLocationFields(
                 countryAttributes: [
                     'required' => true,

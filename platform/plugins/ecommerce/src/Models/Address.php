@@ -22,5 +22,8 @@ class Address extends BaseModel
         'zip_code',
         'customer_id',
         'is_default',
+        'ward_id',       
+        'ward_name',     
+        'address_detail' 
     ];
 }

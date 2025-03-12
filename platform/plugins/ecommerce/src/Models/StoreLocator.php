@@ -19,6 +19,7 @@ class StoreLocator extends BaseModel
         'country',
         'state',
         'city',
+        'ward',
         'zip_code',
         'is_primary',
         'is_shipping_location',

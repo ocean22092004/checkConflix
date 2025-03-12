@@ -95,6 +95,6 @@
     @endif
 
     {!! apply_filters('ecommerce_checkout_footer', null) !!}
-
+    <script src="{{ asset('vendor/core/core/js-validation/js/ghn.js') }}"></script>
 </body>
 </html>

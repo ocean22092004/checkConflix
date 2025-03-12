@@ -19,7 +19,7 @@
             <div class="position-relative">
                 {!! $announcements !!}
             </div>
-            <div style="">
+            <div>
                 <div @class(['tp-header-top-right d-flex align-items-center justify-content-end', 'tp-header-top-black' => $colorMode === 'light'])>
                     <div class="tp-header-top-menu d-none d-lg-flex align-items-center justify-content-end">
                         {!! Theme::partial('language-switcher', ['type' => 'desktop']) !!}

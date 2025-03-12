@@ -529,7 +529,7 @@ class OrderHelper
             $options = $this->getProductOptionData($requestOption);
         }
 
-        $taxClasses= $parentProduct->taxes->pluck('percentage', 'title')->all();
+        $taxClasses = $parentProduct->taxes->pluck('percentage', 'title')->all();
 
         $taxRate = $parentProduct->total_taxes_percentage;
 
@@ -921,6 +921,7 @@ class OrderHelper
 
         $data = array_merge([
             'amount' => Cart::instance('cart')->rawTotalByItems($cartItems),
+            // 'shipping_amount' => $sessionData['shipping_amount'],
             'shipping_method' => $request->input('shipping_method', ShippingMethodEnum::DEFAULT),
             'shipping_option' => $request->input('shipping_option'),
             'tax_amount' => Cart::instance('cart')->rawTaxByItems($cartItems),
@@ -958,7 +959,7 @@ class OrderHelper
             'user_id' => $currentUserId,
             'shipping_method' => $request->input('shipping_method', ShippingMethodEnum::DEFAULT),
             'shipping_option' => $request->input('shipping_option'),
-            'shipping_amount' => 0,
+            'shipping_amount' => 4,
             'tax_amount' => Cart::instance('cart')->rawTaxByItems($cartItems),
             'sub_total' => Cart::instance('cart')->rawSubTotalByItems($cartItems),
             'coupon_code' => session()->get('applied_coupon_code'),
@@ -1178,6 +1179,7 @@ class OrderHelper
 
         if ($order) {
             $order->fill($data);
+            // dd($order);
             $order->save();
         } else {
             $order = Order::query()->create($data);

@@ -133,34 +133,38 @@ class MainCheckout {
             document.dispatchEvent(new CustomEvent('payment-form-reloaded'))
         }
 
-        const calculateShippingFee = (methods) => {
-            const formData = new FormData($checkoutForm.get(0))
+        // const calculateShippingFee = (methods) => {
+        //     const formData = new FormData($checkoutForm.get(0))
 
-            for (let key in methods) {
-                formData.set(key, methods[key])
-            }
+        //     for (let key in methods) {
+        //         formData.set(key, methods[key])
+        //     }
+        //     // console.log('formData')
+        //     formData.set('shipping_amount', $('.shipping-info').data('amount'));
+        //     // console.log("Updated FormData:", Object.fromEntries(formData));
+            
 
-            $.ajax({
-                url: $checkoutForm.data('update-url'),
-                method: 'POST',
-                processData: false,
-                contentType: false,
-                data: formData,
-                beforeSend: () => {
-                    disablePaymentMethodsForm()
-                    $('.shipping-info-loading').show()
-                },
-                success: ({ data }) => {
-                    $('#cart-item').html(data.amount)
-                    $('[data-bb-toggle="checkout-payment-methods-area"]').html(data.payment_methods)
-                    $('[data-bb-toggle="checkout-shipping-methods-area"]').html(data.shipping_methods)
-                },
-                complete: () => {
-                    enablePaymentMethodsForm()
-                    $('.shipping-info-loading').hide()
-                },
-            })
-        }
+        //     $.ajax({
+        //         url: $checkoutForm.data('update-url'),
+        //         method: 'POST',
+        //         processData: false,
+        //         contentType: false,
+        //         data: formData,
+        //         beforeSend: () => {
+        //             disablePaymentMethodsForm()
+        //             $('.shipping-info-loading').show()
+        //         },
+        //         success: ({ data }) => {
+        //             $('#cart-item').html(data.amount)
+        //             $('[data-bb-toggle="checkout-payment-methods-area"]').html(data.payment_methods)
+        //             $('[data-bb-toggle="checkout-shipping-methods-area"]').html(data.shipping_methods)
+        //         },
+        //         complete: () => {
+        //             enablePaymentMethodsForm()
+        //             $('.shipping-info-loading').hide()
+        //         },
+        //     })
+        // }
 
         $(document).on('change', 'input.shipping_method_input', (event) => {
             const data = {}

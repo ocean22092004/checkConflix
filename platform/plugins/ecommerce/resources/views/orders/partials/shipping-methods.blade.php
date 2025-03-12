@@ -8,6 +8,7 @@
             >
 
             <ul class="list-group list_payment_method">
+                <li>dmdmdmdm</li>
                 @foreach ($shipping as $shippingKey => $shippingItems)
                     @foreach ($shippingItems as $shippingOption => $shippingItem)
                         @include(

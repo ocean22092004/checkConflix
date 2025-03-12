@@ -46,9 +46,13 @@ class CheckoutRequest extends Request
                 $rules['address.address_id'] = 'required_without:address.name';
                 if (! $this->has('address.address_id') || $addressId === 'new') {
                     $rules = array_merge($rules, EcommerceHelper::getCustomerAddressValidationRules('address.'));
+                    $rules['address.address_detail'] = ['required', 'string', 'max:225']; // Thêm address_detail
+                    unset($rules['address.address']); //  Xóa rule của address
                 }
             } else {
                 $rules = array_merge($rules, EcommerceHelper::getCustomerAddressValidationRules('address.'));
+                $rules['address.address_detail'] = ['required', 'string', 'max:225']; // Thêm address_detail
+                unset($rules['address.address']); //  Xóa rule của address
             }
         }
 
@@ -99,6 +103,8 @@ class CheckoutRequest extends Request
 
         if (! auth('customer')->check()) {
             $rules = array_merge($rules, EcommerceHelper::getCustomerAddressValidationRules('address.'));
+            $rules['address.address_detail'] = ['required', 'string', 'max:225']; // Thêm address_detail
+            unset($rules['address.address']); //  Xóa rule của address
             $rules['address.email'] = 'required|email|max:60|min:6';
             if (EcommerceHelper::countDigitalProducts($products) == $products->count() && ! $billingAddressSameAsShippingAddress) {
                 $rules = $this->removeRequired($rules, [
@@ -126,7 +132,7 @@ class CheckoutRequest extends Request
         $hiddenFields = EcommerceHelper::getHiddenFieldsAtCheckout();
 
         if ($hiddenFields) {
-            Arr::forget($rules, array_map(fn ($value) => "address.$value", $hiddenFields));
+            Arr::forget($rules, array_map(fn($value) => "address.$value", $hiddenFields));
         }
 
         if ($nullableFields) {
@@ -144,7 +150,7 @@ class CheckoutRequest extends Request
                 }
 
                 if (is_array($rules[$key])) {
-                    $rules[$key] = array_merge(['nullable'], array_filter($rules[$key], fn ($item) => $item !== 'required'));
+                    $rules[$key] = array_merge(['nullable'], array_filter($rules[$key], fn($item) => $item !== 'required'));
                 }
             }
         }
@@ -169,7 +175,7 @@ class CheckoutRequest extends Request
             'address.state' => __('State'),
             'address.city' => __('City'),
             'address.country' => __('Country'),
-            'address.address' => __('Address'),
+            'address.address_detail' => __('Address'),
             'address.zip_code' => __('Zipcode'),
         ];
     }
