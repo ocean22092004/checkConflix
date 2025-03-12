@@ -1,5 +1,15 @@
 {!! apply_filters(RENDER_PRODUCTS_IN_CHECKOUT_PAGE, $products) !!}
-
+<?php
+    // dd($products);
+?>
+@forEach($products as $product)
+    <input type="text" hidden name="" id="{{$product->id}}_name" value="{{$product->name}}">
+    <input type="text" hidden name="" id="{{$product->id}}_quantity">
+    <input type="text" hidden name="" id="{{$product->id}}_length" value="{{$product->length}}">
+    <input type="text" hidden name="" id="{{$product->id}}_width" value="{{$product->wide}}">
+    <input type="text" hidden name="" id="{{$product->id}}_height" value="{{$product->height}}">
+    <input type="text" hidden name="" id="{{$product->id}}_weight" value="{{$product->weight}}">
+@endforeach
 <div class="mt-2 p-2">
     <div class="row">
         <div class="col-6">
@@ -43,8 +53,8 @@
                 <p>{{ __('Coupon code discount amount') }}:</p>
             </div>
             <div class="col-6">
-                <p class="price-text total-discount-amount-text">
-                    {{ format_price($couponDiscountAmount) }}
+                <p id="couponDiscountAmount" class="price-text total-discount-amount-text" data-code="{{$couponDiscountAmount}}">
+                    - {{ format_price($couponDiscountAmount) }}
                 </p>
             </div>
         </div>
@@ -61,25 +71,44 @@
             </div>
         </div>
     @endif
-    @if (!empty($shipping) && Arr::get($sessionCheckoutData, 'is_available_shipping', true))
+    @if(setting('shipping_ghn_status') == 1)
         <div class="row">
             <div class="col-6">
                 <p>{{ __('Shipping fee') }}:</p>
             </div>
             <div class="col-6 float-end">
-                <p class="price-text shipping-price-text">{{ format_price($shippingAmount) }}</p>
+                <p id="shipping_amount" class="price-text shipping-price-text"></p>
             </div>
         </div>
+    {{-- @else
+        @if (!empty($shipping) && Arr::get($sessionCheckoutData, 'is_available_shipping', true))
+            <div class="row">
+                <div class="col-6">
+                    <p>{{ __('Shipping fee') }}:</p>
+                </div>
+                <div class="col-6 float-end">
+                    <p class="price-text shipping-price-text">{{ format_price($shippingAmount) }}</p>
+                </div>
+            </div>
+        @endif --}}
     @endif
-
     <div class="row">
         <div class="col-6">
             <p><strong>{{ __('Total') }}</strong>:</p>
         </div>
         <div class="col-6 float-end">
-            <p class="total-text raw-total-text" data-price="{{ format_price($rawTotal, null, true) }}">
+            <p id="total_amount" class="total-text raw-total-text" data-price="{{ format_price($rawTotal, null, true) }}">
                 {{ format_price($orderAmount) }}
             </p>
+            
         </div>
     </div>
+    <form id="checkout_form">
+        <input name="token" hidden id="token_checkout" value="{{}}">
+        <input name="shipping_amount_inp" hidden id="shipping_amount_inp" value="">
+        <input name="total_amount_ipn" hidden id="total_amount_ipn" value="">
+        <input name="couponValue" hidden id="couponValue" value="">
+        <input name="couponType" hidden id="couponType" value="">
+    </form>
 </div>
+

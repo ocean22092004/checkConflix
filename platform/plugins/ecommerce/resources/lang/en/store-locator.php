@@ -13,4 +13,6 @@ return [
     'company' => 'Company',
     'zip_code' => 'Zip Code',
     'is_shipping_location' => 'Is shipping location?',
+    'ward' => 'Ward',
+    'ward_placeholder' => 'Enter ward name',
 ];

@@ -16,5 +16,5 @@
 </div>
 
 <div class="coupon-error-msg mt-1">
-    <span class="text-danger"></span>
+    <span id="error_discount" class="text-danger"></span>
 </div>

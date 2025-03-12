@@ -23,6 +23,7 @@ trait HasLocationFields
         array $countryAttributes = [],
         array $stateAttributes = [],
         array $cityAttributes = [],
+        array $wardAttributes = [],
         array $addressAttributes = [],
         array $zipCodeAttributes = []
     ): static {
@@ -210,6 +211,39 @@ trait HasLocationFields
                     ]
                 );
             });
+
+            $wardFieldName = Arr::get($wardAttributes, 'name', 'ward');
+            $wardAttributes = Arr::except($wardAttributes, ['name']);
+            
+            $this->add(
+                $wardFieldName,
+                SelectField::class,
+                [
+                    ...SelectFieldOption::make()
+                        ->label(trans('plugins/ecommerce::store-locator.ward'))
+                        ->choices([])
+                        ->attributes([
+                            'data-type' => 'ward',
+                            'disabled' => true, // Mặc định disabled, chờ city chọn mới kích hoạt
+                        ])
+                        ->colspan(3)
+                        ->toArray(),
+                    ...$wardAttributes,
+                ]
+            );
+            $this->add(
+                'ward_warning',
+                HtmlField::class,
+                [
+                    ...HtmlFieldOption::make()
+                        ->content('
+                                <p id="ward-warning" class="text-warning" style="font-size: 10px">Địa chỉ bạn vẫn cần nhập Phường xã</p>
+                                <p id="ward-warning" class="text-warning">Bạn phải chọn phường/xã cho đơn vị giao hàng nhanh.</p>
+                        ')
+                        ->colspan(3)
+                        ->toArray(),
+                ]
+            );            
 
         return $this;
     }

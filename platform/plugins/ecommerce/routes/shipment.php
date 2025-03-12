@@ -3,7 +3,7 @@
 use Botble\Base\Facades\AdminHelper;
 use Botble\Ecommerce\Http\Controllers\PrintShippingLabelController;
 use Illuminate\Support\Facades\Route;
-
+// ecommerce.shipments.shippo.settings.update
 AdminHelper::registerRoutes(function (): void {
     Route::group(['namespace' => 'Botble\Ecommerce\Http\Controllers', 'prefix' => 'ecommerce', 'as' => 'ecommerce.'], function (): void {
         Route::group(['prefix' => 'shipments', 'as' => 'shipments.'], function (): void {

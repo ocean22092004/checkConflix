@@ -1,6 +1,9 @@
 <x-core::layouts.base>
     @include('core/base::layouts.' . AdminAppearance::getCurrentLayout() . '.partials.before-content')
-
+    @if (setting('shipping_ghn_status') == 1)
+        @include('GhnOrder.alert')
+    @endif
+    
     <div @class([
         'page-wrapper',
         'rv-media-integrate-wrapper' => Route::currentRouteName() === 'media.index',

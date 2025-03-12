@@ -15,4 +15,7 @@ return [
     'is_shipping_location' => 'Là địa điểm vận chuyển?',
     'phone' => 'Điện thoại',
     'address' => 'Địa chỉ',
+    'ward' => 'Phường/Xã',
+    'ward_code' => 'Mã Phường/Xã',
+    'ward_placeholder' => 'Nhập tên phường/xã',
 ];

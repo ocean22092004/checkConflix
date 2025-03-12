@@ -55,12 +55,18 @@
     @if ($orderEditRouteName)
         <x-core::card.footer class="text-center py-2">
             <a
+                class=""
                 href="{{ route($orderEditRouteName, $shipment->order_id) }}"
                 target="_blank"
             >
                 {{ trans('plugins/ecommerce::shipping.view_order', ['order_id' => $shipment->order->code]) }}
                 <x-core::icon name="ti ti-external-link" />
             </a>
+            <div class="py-2">
+                @include('GhnOrder.create')
+            </div>
+            
         </x-core::card.footer>
     @endif
 </x-core::card>
+

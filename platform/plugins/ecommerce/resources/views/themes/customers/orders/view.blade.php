@@ -5,7 +5,7 @@
 @section('content')
     <div class="customer-order-detail">
         @include(EcommerceHelper::viewPath('includes.order-tracking-detail'))
-
+        {{-- âsdasdasdasda
         @if ($order->canBeCanceled())
             <x-core::form method="post" :files="true" class="bg-body-tertiary p-3 my-3 customer-order-upload-receipt" :url="route('customer.orders.upload-proof', $order)">
                 <div>
@@ -32,7 +32,7 @@
                     <p class="mb-1">{{ __('View Receipt:') }}<a href="{{ route('customer.orders.download-proof', $order) }}" target="_blank" class="btn-link ms-1">{{ $order->proof_file }}</a></p>
                 </label>
             </div>
-        @endif
+        @endif --}}
 
         <div class="mt-3">
             <div class="d-flex flex-wrap gap-2">

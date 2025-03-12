@@ -17,6 +17,7 @@ class StoreLocatorController extends BaseController
         StoreLocator::query()->create([
             ...$request->validated(),
             'is_primary' => false,
+            'ward' => $request->input('ward'),
         ]);
 
         return $this
@@ -39,7 +40,10 @@ class StoreLocatorController extends BaseController
 
     public function update(StoreLocator $locator, StoreLocatorRequest $request, SettingStore $settingStore)
     {
-        $locator->update($request->validated());
+        $locator->update([
+            ...$request->validated(),
+            'ward' => $request->input('ward'), // Cập nhật ward
+        ]);
 
         if ($locator->is_primary) {
             $prefix = EcommerceHelper::getSettingPrefix();
@@ -51,6 +55,7 @@ class StoreLocatorController extends BaseController
                     $prefix . 'store_country' => $locator->country,
                     $prefix . 'store_state' => $locator->state,
                     $prefix . 'store_city' => $locator->city,
+                    $prefix . 'store_ward' => $locator->ward,
                 ])
                 ->save();
         }

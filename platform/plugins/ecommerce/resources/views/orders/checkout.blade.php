@@ -1,6 +1,6 @@
 @extends('plugins/ecommerce::orders.master')
 
-@section('title', __('Checkout'))
+@section('title', __('Checkout bdbsb'))
 
 @section('content')
     @if (Cart::instance('cart')->isNotEmpty())
@@ -24,4 +24,5 @@
 
 @push('footer')
     <script type="text/javascript" src="{{ asset('vendor/core/core/js-validation/js/js-validation.js') }}?v=1.0.1"></script>
+    {{-- <script src="{{ asset('vendor/core/core/js-validation/js/ghn.js') }}"></script> --}}
 @endpush

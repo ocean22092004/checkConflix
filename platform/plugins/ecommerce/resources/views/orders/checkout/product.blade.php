@@ -1,4 +1,5 @@
 <div class="row cart-item">
+    {{-- <input type="text" value="{{$product->original_product->store_id}}">  --}}
     <div class="col-3">
         <div class="checkout-product-img-wrapper">
             <img
@@ -31,7 +32,7 @@
                 data-url="{{ route('public.cart.update') }}"
                 data-row-id="{{ $cartItem->rowId }}"
             >
-                <button type="button" class="ec-checkout-quantity-control ec-checkout-quantity-minus" data-bb-toggle="decrease-qty">
+                <button type="button" id="{{$product->id}}_minus" class="ec-checkout-quantity-control ec-checkout-quantity-minus" data-bb-toggle="decrease-qty">
                     <x-core::icon name="ti ti-minus" />
                 </button>
                 <input
@@ -41,9 +42,11 @@
                     min="1"
                     max="{{ $product->with_storehouse_management ? $product->quantity : 1000 }}"
                     data-bb-toggle="update-cart"
+                    id="{{$product->id}}_qty"
                     readonly
                 />
-                <button type="button" class="ec-checkout-quantity-control ec-checkout-quantity-plus" data-bb-toggle="increase-qty">
+
+                <button type="button" id="{{$product->id}}_plus" class="ec-checkout-quantity-control ec-checkout-quantity-plus" data-bb-toggle="increase-qty">
                     <x-core::icon name="ti ti-plus" />
                 </button>
             </div>

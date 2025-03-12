@@ -7,14 +7,14 @@
 
         <div class="checkout__coupon-list">
             @foreach ($discounts as $discount)
-                <div
+                <div id="couponItem"
                     @class(['checkout__coupon-item', 'active' => session()->has('applied_coupon_code') && session()->get('applied_coupon_code') === $discount->code])
                 >
                     <div class="checkout__coupon-item-icon"></div>
                     <div class="checkout__coupon-item-content">
                         {!! apply_filters('checkout_discount_item_before', null, $discount) !!}
 
-                        <div class="checkout__coupon-item-title">
+                        <div id="price_discount_{{$discount->id}}" class="checkout__coupon-item-title">
                             @if ($discount->type_option !== 'shipping')
                                 <h4>{{ $discount->type_option == 'percentage' ? $discount->value . '%' : format_price($discount->value) }}</h4>
                             @endif
@@ -30,12 +30,15 @@
                         </div>
                         <div class="checkout__coupon-item-code">
                             <span>{{ $discount->code }}</span>
+                            <?php
+                                // dd(session()->get('applied_coupon_code'));
+                            ?>
                             @if (!session()->has('applied_coupon_code') || session()->get('applied_coupon_code') !== $discount->code)
-                                <button type="button" data-bb-toggle="apply-coupon-code" data-discount-code="{{ $discount->code }}">
+                                <button id="apply_{{$discount->id}}" data-code="{{$discount->value}}','{{$discount->type_option}}" type="button" data-bb-toggle="apply-coupon-code" data-discount-code="{{ $discount->code }}">
                                     {{ __('Apply') }}
                                 </button>
                             @else
-                                <button type="button" class="remove-coupon-code" data-url="{{ route('public.coupon.remove') }}">
+                                <button id="remove_{{$discount->id}}" type="button" class="remove-coupon-code" data-url="{{ route('public.coupon.remove') }}">
                                     {{ __('Remove') }}
                                 </button>
                             @endif
@@ -48,6 +51,7 @@
 @endif
 
 <div
+    id="checkDiscSession"
     class="checkout-discount-section"
     @if (session()->has('applied_coupon_code')) style="display: none;" @endif
 >
@@ -56,6 +60,7 @@
     </a>
 </div>
 <div
+    id="couponWrapper"
     class="coupon-wrapper mt-2"
     @if (!session()->has('applied_coupon_code')) style="display: none;" @endif
 >
